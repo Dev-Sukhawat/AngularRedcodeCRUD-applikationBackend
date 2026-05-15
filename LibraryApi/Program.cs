@@ -1,7 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 
+using DotNetEnv;
+
 var builder = WebApplication.CreateBuilder(args);
+
+DotNetEnv.Env.Load();
+
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -11,25 +19,23 @@ builder.Services.AddAuthentication(options =>
 .AddCookie()
 .AddGoogle(options =>
 {
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+    options.ClientId = googleClientId ?? "";
+    options.ClientSecret = googleClientSecret ?? "";
 });
 
-builder.Services.AddControllers();
 
-// 1. Tillåt Angular (CORS)
+// 1. CORS Settings
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AngularPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "https://din-app.netlify.app") // Din Angular-adress
+        policy.WithOrigins("http://localhost:4200", "https://din-app.netlify.app")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
-
-// 2. Registrera Controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -44,8 +50,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AngularPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
