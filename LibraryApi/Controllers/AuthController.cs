@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using LibraryApi.Models;
 using LibraryApi.Data;
+using LibraryApi.Services;
 using System.Security.Claims;
 
 namespace LibraryApi.Controllers;
@@ -14,10 +15,12 @@ namespace LibraryApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly TokenService _tokenService;
 
-    public AuthController(ApplicationDbContext context)
+    public AuthController(ApplicationDbContext context, TokenService tokenService)
     {
         _context = context;
+        _tokenService = tokenService;
     }
 
     [HttpPost("login")]
@@ -37,8 +40,13 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid email or password!" });
         }
 
-        // TODO: Replace with real JWT token
-        return Ok(new { token = "fake-jwt-token", email = user.Email, name = user.Name });
+        var token = _tokenService.CreateToken(user);
+
+        return Ok(new {
+            token = token,
+            email = user.Email,
+            name = user.Name
+            });
     }
 
     [HttpPost("register")]
@@ -63,7 +71,13 @@ public class AuthController : ControllerBase
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "User registered successfully!" });
+            var token = _tokenService.CreateToken(user);
+            return Ok(new {
+                token = token,
+                email = user.Email,
+                name = user.Name,
+                message = "User registered successfully!"
+            });
         }
         catch (Exception ex)
         {
@@ -122,8 +136,8 @@ public class AuthController : ControllerBase
                 return StatusCode(500, "Error saving Google user to database.");
             }
         }
+        var token = _tokenService.CreateToken(user);
 
-        // Redirect back to Angular
-        return Redirect($"http://localhost:4200/login?email={email}&success=true");
+        return Redirect($"http://localhost:4200/login?token={token}&email={email}&success=true");
     }
 }
