@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-
+using Microsoft.EntityFrameworkCore;
+using LibraryApi.Data;
+using LibraryApi.Models;
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,8 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
