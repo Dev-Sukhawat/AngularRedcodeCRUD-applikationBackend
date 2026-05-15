@@ -17,7 +17,6 @@ public class User
     public string Email { get; set; } = string.Empty;
 
     [Column("password_hash")]
-    // Om din kolumn i Supabase heter "password_hash", använd [Column] nedan
     public string PasswordHash { get; set; } = string.Empty;
 
     [Column("created_at")]
