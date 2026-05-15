@@ -1,0 +1,13 @@
+# .NET specifikt
+**/bin/
+**/obj/
+.vs/
+*.user
+
+# Inställningar (viktigt för säkerhet)
+**/appsettings.json
+**/appsettings.Development.json
+
+# OS filer
+.DS_Store
+Thumbs.db
