@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using LibraryApi.Models;
+
+
 
 namespace LibraryApi.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
 
@@ -14,6 +16,16 @@ public class AuthController : ControllerBase
     public IActionResult Login([FromBody] LoginRequest request)
     {
         if (request.Email == "test@test.com" && request.Password == "123")
+        {
+            return Ok(new { token = "fake-jwt-token", email = request.Email });
+        }
+        return Unauthorized(new { message = "Fel uppgifter!" });
+    }
+
+    [HttpPost("register")]
+    public IActionResult Register([FromBody] RegisterRequest request)
+    {
+        if (request.Name != null && request.Email == "test@test.com" && request.Password == "123")
         {
             return Ok(new { token = "fake-jwt-token", email = request.Email });
         }
@@ -47,10 +59,3 @@ public class AuthController : ControllerBase
         return Redirect($"http://localhost:4200/login?email={email}&success=true");
     }
 }
-
-public class LoginRequest
-{
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
-
