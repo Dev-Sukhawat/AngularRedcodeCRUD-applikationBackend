@@ -5,6 +5,7 @@
 *.user
 
 # Inställningar (viktigt för säkerhet)
+.env
 **/appsettings.json
 **/appsettings.Development.json
 
