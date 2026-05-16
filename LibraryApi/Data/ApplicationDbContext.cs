@@ -12,5 +12,7 @@ namespace LibraryApi.Data
 
         // Detta gör att .NET förstår att vi vill ha en tabell som heter "Users"
         public DbSet<User> Users { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Quote> Quotes { get; set; }
     }
 }
