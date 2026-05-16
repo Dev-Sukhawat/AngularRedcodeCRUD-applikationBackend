@@ -11,3 +11,7 @@
 # OS filer
 .DS_Store
 Thumbs.db
+
+# Visual Studio / VS Code Language Server Cache
+*.lscache
+.search
