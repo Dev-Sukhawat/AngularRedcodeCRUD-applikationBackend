@@ -137,7 +137,12 @@ public class AuthController : ControllerBase
             }
         }
         var token = _tokenService.CreateToken(user);
+        var hostValue = Request.Host.Value ?? "";
 
-        return Redirect($"http://localhost:4200/login?token={token}&email={email}&success=true");
+        var frontendUrl = hostValue.Contains("render.com")
+            ? "https://angularredcodecrud-applikation.netlify.app"
+            : "http://localhost:4200";
+
+        return Redirect($"{frontendUrl}/login?token={token}&email={email}&success=true");
     }
 }
