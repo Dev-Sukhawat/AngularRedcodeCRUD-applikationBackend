@@ -16,8 +16,8 @@ if (File.Exists(".env"))
 }
 
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
-var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
+var googleClientId = builder.Configuration["GOOGLE_CLIENT_ID"] ?? builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["GOOGLE_CLIENT_SECRET"] ?? builder.Configuration["Authentication:Google:ClientSecret"];
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "HÄR_MÅSTE_DET_VARA_EN_NYCKEL_PÅ_MINST_32_TECKNEN_OM_ENV_SAKNAS";
 
 builder.Services.AddAuthentication(options =>
