@@ -90,7 +90,7 @@ public class AuthController : ControllerBase
     public IActionResult GoogleLogin()
     {
         var properties = new AuthenticationProperties {
-            RedirectUri = Url.Action("GoogleResponse")
+            RedirectUri = "/api/auth/google-response"
         };
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
