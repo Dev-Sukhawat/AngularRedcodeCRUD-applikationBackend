@@ -10,9 +10,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
+if (File.Exists(".env"))
+{
+    DotNetEnv.Env.Load();
+}
 
-var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
 var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "HÄR_MÅSTE_DET_VARA_EN_NYCKEL_PÅ_MINST_32_TECKNEN_OM_ENV_SAKNAS";
@@ -34,8 +37,8 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-        ValidateIssuer = false, // Sätt till true om din TokenService sätter en specifik Issuer
-        ValidateAudience = false, // Sätt till true om din TokenService sätter en specifik Audience
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ClockSkew = TimeSpan.Zero
     };
 });
